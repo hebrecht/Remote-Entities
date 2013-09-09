@@ -189,9 +189,9 @@ public class EntityManager
 		if(entity == null)
 			return null;
 		
-		if(inLocation != null)
+		if(inLocation != null) {
 			this.m_entityChunkLoader.queueSpawn(entity, inLocation, inSetupGoals);
-		
+		}
 		return entity;
 	}
 	
@@ -240,9 +240,8 @@ public class EntityManager
 	 */
 	public void removeEntity(int inID, boolean inDespawn)
 	{
-		if(this.m_entities.containsKey(inID) && inDespawn)
+		if (this.m_entities.containsKey(inID) && inDespawn)
 			this.m_entities.get(inID).despawn(DespawnReason.CUSTOM);
-		
 		this.m_entities.remove(inID);
 	}
 	
@@ -254,10 +253,11 @@ public class EntityManager
 	 */
 	public boolean isRemoteEntity(LivingEntity inEntity)
 	{
-		if(inEntity.hasMetadata("remoteentity"))
+	/*	if(inEntity.hasMetadata("remoteentity"))
 		{
 			for(MetadataValue value : inEntity.getMetadata("remoteentity"))
 			{
+				//System.out.print("EntityManager::isRemoteEntity has metadata");
 				if(value.getOwningPlugin() == this.m_plugin)
 				{
 					if(!(value.value() instanceof RemoteEntity))
@@ -271,14 +271,14 @@ public class EntityManager
 			return false;
 		}
 		else
-		{
+		{*/
 			EntityLiving handle = ((CraftLivingEntity)inEntity).getHandle();
 			if(!(handle instanceof RemoteEntityHandle))
 				return false;
 		
 			RemoteEntityHandle h = (RemoteEntityHandle)handle;
 			return h.getRemoteEntity().getManager() == this;
-		}
+	//	}
 	}
 	
 	/**
@@ -292,7 +292,7 @@ public class EntityManager
 		if(!this.isRemoteEntity(inEntity))
 			return null;
 		
-		if(inEntity.hasMetadata("remoteentity"))
+		/*if(inEntity.hasMetadata("remoteentity"))
 		{
 			for(MetadataValue value : inEntity.getMetadata("remoteentity"))
 			{
@@ -305,7 +305,7 @@ public class EntityManager
 				}
 			}
 		}
-		
+		*/
 		EntityLiving entityHandle = ((CraftLivingEntity)inEntity).getHandle();
 		return ((RemoteEntityHandle)entityHandle).getRemoteEntity();
 	}

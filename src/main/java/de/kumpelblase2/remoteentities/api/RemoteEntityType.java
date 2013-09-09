@@ -20,7 +20,7 @@ public class RemoteEntityType
 	public static final RemoteEntityType Ghast = new RemoteEntityType("Ghast", RemoteGhast.class, RemoteGhastEntity.class, false);
 	public static final RemoteEntityType IronGolem = new RemoteEntityType("IronGolem", RemoteIronGolem.class, RemoteIronGolemEntity.class, false);
 	public static final RemoteEntityType LavaSlime = new RemoteEntityType("LavaSlime", RemoteLavaSlime.class, RemoteLavaSlimeEntity.class, false);
-	public static final RemoteEntityType Mushroom = new RemoteEntityType("Mushroom", RemoteMushroom.class, RemoteMushroomEntity.class, false);
+	public static final RemoteEntityType MushroomCow = new RemoteEntityType("MushroomCow", RemoteMushroom.class, RemoteMushroomEntity.class, false);
 	public static final RemoteEntityType Ocelot = new RemoteEntityType("Ocelote", RemoteOcelote.class, RemoteOceloteEntity.class, false);
 	public static final RemoteEntityType Pig = new RemoteEntityType("Pig", RemotePig.class, RemotePigEntity.class, false);
 	public static final RemoteEntityType Pigmen = new RemoteEntityType("Pigmen", RemotePigmen.class, RemotePigmenEntity.class, false);
