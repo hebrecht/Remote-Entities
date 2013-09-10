@@ -236,6 +236,13 @@ public interface RemoteEntity extends Nameable
 	public EntityManager getManager();
 	
 	/**
+	 * Changes the manager that created this entity
+	 * 
+	 * @return EntityManager
+	 */
+	public void setManager(EntityManager manager);
+
+	/**
 	 * The native name is the name that is used in the EntityTypes enum. This is used internally for automatically registering the entity to the enum.
 	 * 
 	 * @return native name

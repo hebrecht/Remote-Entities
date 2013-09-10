@@ -37,7 +37,7 @@ public abstract class RemoteBaseEntity<T extends LivingEntity> implements Remote
 	protected EntityLiving m_entity;
 	protected boolean m_isPushable = true;
 	protected float m_speed;
-	protected final EntityManager m_manager;
+	protected EntityManager m_manager;
 	protected Location m_unloadedLocation;
 	protected String m_nameToSpawnwith;
 
@@ -69,6 +69,12 @@ public abstract class RemoteBaseEntity<T extends LivingEntity> implements Remote
 	public EntityManager getManager()
 	{
 		return this.m_manager;
+	}
+	
+	@Override
+	public void setManager(EntityManager manager)
+	{
+		this.m_manager = manager;
 	}
 
 	@Override
