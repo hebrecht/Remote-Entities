@@ -1,7 +1,7 @@
 package de.kumpelblase2.remoteentities.api;
 
 import java.util.*;
-import net.minecraft.server.v1_5_R3.EntityLiving;
+import net.minecraft.server.v1_6_R2.EntityLiving;
 import de.kumpelblase2.remoteentities.entities.*;
 
 public class RemoteEntityType
@@ -34,8 +34,9 @@ public class RemoteEntityType
 	public static final RemoteEntityType Witch = new RemoteEntityType("Witch", RemoteWitch.class, RemoteWitchEntity.class, false);
 	public static final RemoteEntityType Wither = new RemoteEntityType("Wither", RemoteWither.class, RemoteWitherEntity.class, false);
 	public static final RemoteEntityType Bat = new RemoteEntityType("Bat", RemoteBat.class, RemoteBatEntity.class, false);
+	public static final RemoteEntityType Horse = new RemoteEntityType("Horse", RemoteHorse.class, RemoteHorseEntity.class, false);
 
-	private static List<RemoteEntityType> values = new ArrayList<RemoteEntityType>();
+	private static List<RemoteEntityType> values;
 	private static RemoteEntityType[] lastConvert = null;
 
 	private Class<? extends EntityLiving> m_entityClass;
@@ -49,6 +50,11 @@ public class RemoteEntityType
 		this.m_entityClass = inEntityClass;
 		this.m_remoteClass = inRemoteClass;
 		this.m_isNamed = inNamed;
+		if(values == null)
+			values = new ArrayList<RemoteEntityType>();
+
+		if(!values.contains(this))
+			values.add(this);
 	}
 
 	public Class<? extends RemoteEntity> getRemoteClass()
@@ -136,8 +142,10 @@ public class RemoteEntityType
 		if(valueOf(inType.name()) != null)
 			return false;
 
-		values.add(inType);
-		convert();
+		if(!values.contains(inType))
+			values.add(inType);
+
+		update();
 		return true;
 	}
 
@@ -154,7 +162,7 @@ public class RemoteEntityType
 					return false;
 
 				it.remove();
-				convert();
+				update();
 				return true;
 			}
 			pos++;
@@ -166,7 +174,7 @@ public class RemoteEntityType
 	{
 		for(RemoteEntityType type : values())
 		{
-			if(type.getEntityClass().equals(inEntityClass) || type.getEntityClass().getSuperclass().equals(inEntityClass))
+			if(type.getEntityClass().equals(inEntityClass) || type.getEntityClass().getSuperclass().equals(inEntityClass) || type.getEntityClass().isAssignableFrom(inEntityClass))
 				return type;
 		}
 		return null;
@@ -182,7 +190,7 @@ public class RemoteEntityType
 		return null;
 	}
 
-	private static void convert()
+	public static void update()
 	{
 		lastConvert = values.toArray(new RemoteEntityType[values.size()]);
 	}

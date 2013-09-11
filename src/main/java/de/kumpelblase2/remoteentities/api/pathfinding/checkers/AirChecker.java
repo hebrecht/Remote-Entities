@@ -1,4 +1,7 @@
-package de.kumpelblase2.remoteentities.api.pathfinding;
+package de.kumpelblase2.remoteentities.api.pathfinding.checkers;
+
+import de.kumpelblase2.remoteentities.api.pathfinding.MoveData;
+import de.kumpelblase2.remoteentities.api.pathfinding.Pathfinder;
 
 public class AirChecker implements MoveChecker
 {

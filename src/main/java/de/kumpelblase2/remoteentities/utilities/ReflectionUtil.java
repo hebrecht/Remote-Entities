@@ -4,8 +4,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
-import net.minecraft.server.v1_5_R3.EntityLiving;
-import net.minecraft.server.v1_5_R3.PathfinderGoalSelector;
+import com.avaje.ebeaninternal.server.lucene.FieldFactory;
+import net.minecraft.server.v1_6_R2.EntityLiving;
+import net.minecraft.server.v1_6_R2.PathfinderGoalSelector;
 import de.kumpelblase2.remoteentities.RemoteEntities;
 import de.kumpelblase2.remoteentities.api.thinking.Desire;
 import de.kumpelblase2.remoteentities.persistence.ParameterData;
@@ -62,7 +63,7 @@ public final class ReflectionUtil
             args[1] = String.class;
             args[2] = int.class;
 
-            Method a = net.minecraft.server.v1_5_R3.EntityTypes.class.getDeclaredMethod("a", args);
+            Method a = net.minecraft.server.v1_6_R2.EntityTypes.class.getDeclaredMethod("a", args);
             a.setAccessible(true);
 
             a.invoke(a, inClass, name, inID);
@@ -78,7 +79,9 @@ public final class ReflectionUtil
 	 *
 	 * @param inEntity	entity
 	 * @return			speed
+	 * @deprecated because of new attribute system
 	 */
+	@Deprecated
 	public static float getSpeed(EntityLiving inEntity)
 	{
 		try
@@ -107,7 +110,9 @@ public final class ReflectionUtil
 	 *
 	 * @param inEntity	entity
 	 * @return			modifier
+	 * @deprecated because of new attribute system
 	 */
+	@Deprecated
 	public static float getSpeedModifier(EntityLiving inEntity)
 	{
 		try
@@ -128,6 +133,28 @@ public final class ReflectionUtil
 		catch(Exception e)
 		{
 			return 0F;
+		}
+	}
+
+	public static boolean isJumping(EntityLiving inEntity)
+	{
+		try
+		{
+			Field jump;
+			if(s_cachedFields.containsKey("jump"))
+				jump = s_cachedFields.get("jump");
+			else
+			{
+				jump = EntityLiving.class.getDeclaredField("bd");
+				jump.setAccessible(true);
+				s_cachedFields.put("jump", jump);
+			}
+
+			return jump.getBoolean(inEntity);
+		}
+		catch(Exception e)
+		{
+			return false;
 		}
 	}
 
@@ -160,7 +187,7 @@ public final class ReflectionUtil
 						try
 						{
 							Object value = field.get(inClass);
-							parameters.add(new ParameterData(sas.pos(), field.getType().getName(), value, sas.special()));
+							parameters.add(new ParameterData(sas.pos() - 1, field.getType().getName(), value, sas.special()));
 							break;
 						}
 						catch(Exception e)

@@ -1,33 +1,35 @@
-package de.kumpelblase2.remoteentities.api.pathfinding;
+package de.kumpelblase2.remoteentities.api.pathfinding.checkers;
 
 import org.bukkit.Material;
 import org.bukkit.material.Door;
 import org.bukkit.material.Gate;
+import de.kumpelblase2.remoteentities.api.pathfinding.MoveData;
 
 @SuppressWarnings("deprecation")
 public class DoorOpenChecker implements MoveChecker
 {
 	private boolean m_ironDoor;
-	
+
 	public DoorOpenChecker()
 	{
 		this(true);
 	}
-	
+
 	public DoorOpenChecker(boolean inIgnoreIronDoor)
 	{
 		this.m_ironDoor = inIgnoreIronDoor;
-		Pathfinder.transparentMaterial.add(Material.WOOD_DOOR);
+		//TODO: Is this really needed?
+		/*Pathfinder.transparentMaterial.add(Material.WOOD_DOOR);
 		if(!this.m_ironDoor)
-			Pathfinder.transparentMaterial.add(Material.IRON_DOOR_BLOCK);
+			Pathfinder.transparentMaterial.add(Material.IRON_DOOR_BLOCK);*/
 	}
-	
+
 	@Override
 	public void checkMove(MoveData inData)
 	{
 		if(inData.isValid())
 			return;
-		
+
 		if(inData.getAboveBlock().getType() == Material.FENCE_GATE)
 		{
 			Gate g = (Gate)inData.getAboveBlock().getState().getData();
@@ -41,12 +43,12 @@ public class DoorOpenChecker implements MoveChecker
 				inData.setValid(true);
 		}
 	}
-	
+
 	public void setIgnoreIronDoor(boolean inIgnore)
 	{
 		this.m_ironDoor = inIgnore;
 	}
-	
+
 	public boolean isIronDoorIgnored()
 	{
 		return this.m_ironDoor;
