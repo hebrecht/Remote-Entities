@@ -16,7 +16,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.6.2-R0.1</version>
+            <version>1.6.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
@@ -24,17 +24,18 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.1</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
     <distributionManagement>
         <repository>
             <id>remoteentities-ftp</id>
-            <url>ftp://ftp.infinityblade.de/httpdocs/remoteentities/releases</url>
+            <url>ftp://ftp.infinityblade.de/remoteentities/releases</url>
         </repository>
         <snapshotRepository>
             <id>remoteentities-ftp</id>
-            <url>ftp://ftp.infinityblade.de/httpdocs/remoteentities/snapshots</url>
+            <url>ftp://ftp.infinityblade.de/remoteentities/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 

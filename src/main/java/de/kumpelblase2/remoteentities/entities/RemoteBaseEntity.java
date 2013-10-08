@@ -1,14 +1,14 @@
 package de.kumpelblase2.remoteentities.entities;
 
 import java.util.*;
-import net.minecraft.server.v1_6_R2.*;
-import net.minecraft.server.v1_6_R2.World;
+import net.minecraft.server.v1_6_R3.*;
+import net.minecraft.server.v1_6_R3.World;
 import org.bukkit.*;
 import org.bukkit.Chunk;
-import org.bukkit.craftbukkit.v1_6_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_6_R2.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_6_R2.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_6_R2.inventory.CraftInventoryPlayer;
+import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_6_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_6_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_6_R3.inventory.CraftInventoryPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
@@ -330,7 +330,7 @@ public abstract class RemoteBaseEntity<T extends LivingEntity> implements Remote
 		if(event.isCancelled() && inReason != DespawnReason.PLUGIN_DISABLE)
 			return false;
 
-		if(inReason != DespawnReason.CHUNK_UNLOAD)
+		if(inReason != DespawnReason.CHUNK_UNLOAD && inReason != DespawnReason.NAME_CHANGE)
 		{
 			for(Behavior behaviour : this.getMind().getBehaviours())
 			{
@@ -669,7 +669,7 @@ public abstract class RemoteBaseEntity<T extends LivingEntity> implements Remote
 		this.getMind().clearTargetingDesires();
 	}
 
-	boolean onInteract(Player inEntity)
+	boolean onInteract(Player inEntity, boolean inLeftClick)
 	{
 		if(this.getFeatures().hasFeature(TradingFeature.class))
 		{
@@ -683,7 +683,7 @@ public abstract class RemoteBaseEntity<T extends LivingEntity> implements Remote
 
 		if(this.getMind().canFeel())
 		{
-			RemoteEntityInteractEvent event = new RemoteEntityInteractEvent(this, inEntity);
+			RemoteEntityInteractEvent event = new RemoteEntityInteractEvent(this, inEntity, inLeftClick);
 			Bukkit.getPluginManager().callEvent(event);
 			if(event.isCancelled())
 				return false;
@@ -692,6 +692,11 @@ public abstract class RemoteBaseEntity<T extends LivingEntity> implements Remote
 				((InteractBehavior)this.getMind().getBehaviour("Interact")).onInteract(inEntity);
 		}
 		return true;
+	}
+
+	boolean onInteract(Player inEntity)
+	{
+		return this.onInteract(inEntity, true);
 	}
 
 	protected abstract void setupSounds();

@@ -1,6 +1,6 @@
 package de.kumpelblase2.remoteentities.entities;
 
-import net.minecraft.server.v1_6_R2.*;
+import net.minecraft.server.v1_6_R3.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.util.Vector;
@@ -113,6 +113,18 @@ public class RemoteHorseEntity extends EntityHorse implements RemoteEntityHandle
 			return super.a(entity);
 
 		return ((RemoteBaseEntity)this.m_remoteEntity).onInteract((Player)entity.getBukkitEntity()) && super.a(entity);
+	}
+
+	@Override
+	public boolean c(EntityLiving entity)
+	{
+		if(this.getRemoteEntity() == null)
+			return super.c(entity);
+
+		if(!(entity.getBukkitEntity() instanceof Player))
+			return super.c(entity);
+
+		return ((RemoteBaseEntity)this.m_remoteEntity).onInteract((Player)entity.getBukkitEntity(), false) && super.c(entity);
 	}
 
 	@Override

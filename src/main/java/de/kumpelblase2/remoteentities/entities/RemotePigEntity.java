@@ -1,7 +1,7 @@
 package de.kumpelblase2.remoteentities.entities;
 
 import java.lang.reflect.Field;
-import net.minecraft.server.v1_6_R2.*;
+import net.minecraft.server.v1_6_R3.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.util.Vector;
@@ -129,6 +129,18 @@ public class RemotePigEntity extends EntityPig implements RemoteEntityHandle
 	}
 
 	@Override
+	public boolean c(EntityLiving entity)
+	{
+		if(this.getRemoteEntity() == null)
+			return super.c(entity);
+
+		if(!(entity.getBukkitEntity() instanceof Player))
+			return super.c(entity);
+
+		return ((RemoteBaseEntity)this.m_remoteEntity).onInteract((Player)entity.getBukkitEntity(), false) && super.c(entity);
+	}
+
+	@Override
 	public void die(DamageSource damagesource)
 	{
 		((RemoteBaseEntity)this.m_remoteEntity).onDeath();
@@ -142,13 +154,13 @@ public class RemotePigEntity extends EntityPig implements RemoteEntityHandle
 	}
 
 	@Override
-	protected String aN()
+	protected String aO()
 	{
 		return this.m_remoteEntity.getSound(EntitySound.HURT);
 	}
 
 	@Override
-	protected String aO()
+	protected String aP()
 	{
 		return this.m_remoteEntity.getSound(EntitySound.DEATH);
 	}

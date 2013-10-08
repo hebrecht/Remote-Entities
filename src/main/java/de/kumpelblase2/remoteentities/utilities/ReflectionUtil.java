@@ -4,9 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
-import com.avaje.ebeaninternal.server.lucene.FieldFactory;
-import net.minecraft.server.v1_6_R2.EntityLiving;
-import net.minecraft.server.v1_6_R2.PathfinderGoalSelector;
+import org.bukkit.Bukkit;
 import de.kumpelblase2.remoteentities.RemoteEntities;
 import de.kumpelblase2.remoteentities.api.thinking.Desire;
 import de.kumpelblase2.remoteentities.persistence.ParameterData;
@@ -23,7 +21,7 @@ public final class ReflectionUtil
 	 * @param inSelectorName	name of the selector (targetSelector or movementSelector)
 	 * @param inNewSelector		new selector
 	 */
-	public static void replaceGoalSelector(EntityLiving inEntity, String inSelectorName, PathfinderGoalSelector inNewSelector)
+	public static void replaceGoalSelector(Object inEntity, String inSelectorName, Object inNewSelector)
 	{
 		try
 		{
@@ -63,7 +61,7 @@ public final class ReflectionUtil
             args[1] = String.class;
             args[2] = int.class;
 
-            Method a = net.minecraft.server.v1_6_R2.EntityTypes.class.getDeclaredMethod("a", args);
+            Method a = Class.forName("net.minecraft.server." + RemoteEntities.getMinecraftRevision() + ".EntityTypes").getDeclaredMethod("a", args);
             a.setAccessible(true);
 
             a.invoke(a, inClass, name, inID);
@@ -75,68 +73,12 @@ public final class ReflectionUtil
 	}
 
 	/**
-	 * Gets the speed of an entity
+	 * Checks if the entity is jumping.
 	 *
-	 * @param inEntity	entity
-	 * @return			speed
-	 * @deprecated because of new attribute system
+	 * @param inEntity  The entity to check
+	 * @return          True if it is, otherwise false
 	 */
-	@Deprecated
-	public static float getSpeed(EntityLiving inEntity)
-	{
-		try
-		{
-			if(s_cachedFields.containsKey("speed"))
-			{
-				Field speed = s_cachedFields.get("speed");
-				return speed.getFloat(inEntity);
-			}
-			else
-			{
-				Field speed = inEntity.getClass().getDeclaredField("bI");
-				speed.setAccessible(true);
-				s_cachedFields.put("speed", speed);
-				return speed.getFloat(inEntity);
-			}
-		}
-		catch(Exception e)
-		{
-			return 0F;
-		}
-	}
-
-	/**
-	 * Gets the speed modifier of an entity
-	 *
-	 * @param inEntity	entity
-	 * @return			modifier
-	 * @deprecated because of new attribute system
-	 */
-	@Deprecated
-	public static float getSpeedModifier(EntityLiving inEntity)
-	{
-		try
-		{
-			if(s_cachedFields.containsKey("speedModifier"))
-			{
-				Field speed = s_cachedFields.get("speedModifier");
-				return speed.getFloat(inEntity);
-			}
-			else
-			{
-				Field speed = inEntity.getClass().getDeclaredField("bQ");
-				speed.setAccessible(true);
-				s_cachedFields.put("speedModifier", speed);
-				return speed.getFloat(inEntity);
-			}
-		}
-		catch(Exception e)
-		{
-			return 0F;
-		}
-	}
-
-	public static boolean isJumping(EntityLiving inEntity)
+	public static boolean isJumping(Object inEntity)
 	{
 		try
 		{
@@ -145,7 +87,7 @@ public final class ReflectionUtil
 				jump = s_cachedFields.get("jump");
 			else
 			{
-				jump = EntityLiving.class.getDeclaredField("bd");
+				jump = Class.forName("net.minecraft.server." + RemoteEntities.getMinecraftRevision() + ".EntityLiving").getDeclaredField("bd");
 				jump.setAccessible(true);
 				s_cachedFields.put("jump", jump);
 			}
@@ -167,7 +109,6 @@ public final class ReflectionUtil
 	public static List<ParameterData> getParameterDataForClass(Object inClass)
 	{
 		Class<?> clazz = inClass.getClass();
-		System.out.println(clazz.toString());
 		List<ParameterData> parameters = new ArrayList<ParameterData>();
 		Set<String> membersLooked = new HashSet<String>();
 		while(clazz != Object.class && clazz != Desire.class)
@@ -187,7 +128,7 @@ public final class ReflectionUtil
 						try
 						{
 							Object value = field.get(inClass);
-							parameters.add(new ParameterData(sas.pos() - 1, field.getType().getName(), value, sas.special()));
+							parameters.add(new ParameterData(Math.max(0, sas.pos() - 1), field.getType().getName(), value, sas.special()));
 							break;
 						}
 						catch(Exception e)
@@ -197,8 +138,30 @@ public final class ReflectionUtil
 					}
 				}
 			}
+
 			clazz = clazz.getSuperclass();
 		}
 		return parameters;
+	}
+
+	public static String getMinecraftRevision()
+	{
+		Class serverClass = Bukkit.getServer().getClass();
+		String remaining = serverClass.getPackage().getName().replace("org.bukkit.craftbukkit.", "");
+		return remaining.split("\\.")[0];
+	}
+
+	public static Class getNMSClassByName(String inName)
+	{
+		try
+		{
+			return Class.forName("net.minecraft.server." + RemoteEntities.getMinecraftRevision() + "." + inName);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 }

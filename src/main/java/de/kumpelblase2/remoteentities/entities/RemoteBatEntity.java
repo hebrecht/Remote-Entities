@@ -1,6 +1,6 @@
 package de.kumpelblase2.remoteentities.entities;
 
-import net.minecraft.server.v1_6_R2.*;
+import net.minecraft.server.v1_6_R3.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.util.Vector;
@@ -60,7 +60,7 @@ public class RemoteBatEntity extends EntityBat implements RemoteEntityHandle
 	}
 
 	@Override
-	public boolean be()
+	public boolean bf()
 	{
 		return true;
 	}
@@ -125,6 +125,18 @@ public class RemoteBatEntity extends EntityBat implements RemoteEntityHandle
 	}
 
 	@Override
+	public boolean c(EntityLiving entity)
+	{
+		if(this.getRemoteEntity() == null)
+			return super.c(entity);
+
+		if(!(entity.getBukkitEntity() instanceof Player))
+			return super.c(entity);
+
+		return ((RemoteBaseEntity)this.m_remoteEntity).onInteract((Player)entity.getBukkitEntity(), false) && super.c(entity);
+	}
+
+	@Override
 	public void die(DamageSource damagesource)
 	{
 		((RemoteBaseEntity)this.m_remoteEntity).onDeath();
@@ -138,30 +150,30 @@ public class RemoteBatEntity extends EntityBat implements RemoteEntityHandle
 	}
 
 	@Override
-	protected String aN()
+	protected String aO()
 	{
 		return this.m_remoteEntity.getSound(EntitySound.HURT);
 	}
 
 	@Override
-	protected String aO()
+	protected String aP()
 	{
 		return this.m_remoteEntity.getSound(EntitySound.DEATH);
 	}
 
 	@Override
-	public void bh()
+	public void bi()
 	{
 		//taken from EntityInsentient.java#373 - 402
 		//removed profilers and modified to work properly
 		++this.aV;
-		this.bo();
+		this.u();
 		this.getEntitySenses().a();
 		this.targetSelector.a();
 		this.goalSelector.a();
 		this.world.methodProfiler.b();
 		this.getNavigation().f();
-		this.bj();
+		this.bk();
 		this.getControllerMove().c();
 		this.getControllerLook().a();
 		this.getControllerJump().b();
